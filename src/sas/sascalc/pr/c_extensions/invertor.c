@@ -3,6 +3,7 @@
 #include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 double pi = 3.1416;
 
@@ -311,4 +312,41 @@ double rg(double *pars, double d_max, int n_c, int nslice) {
         sum_r2 += r*r*value;
     }
     return sqrt(sum_r2/(2.0*sum));
+}
+
+int main(void) {
+  printf("Hello World\n");
+  int size_p = 40;
+  int size_q = 301;
+  double* p = malloc(size_p * sizeof(double));
+  double* q = malloc(size_q * sizeof(double));
+  int i;
+  for(i = 0; i < size_q; i++) {
+      q[i] = 0.01 + (0.00166 * i);
+      printf("%f, ", q[i]);
+  }
+  printf("\n");
+  for(i = 0; i < size_p; i++) {
+       p[i] = i;
+       printf("%f, ", p[i]);
+  }
+  double d_max = 2000;
+  double width = 0.01;
+  double height = 3;
+  int npts = 30;
+  int j = 0;
+  for(j = 0; j < 10; j++) {
+	  clock_t begin = clock();
+	  double res = iq_smeared(p, d_max, size_p, height, width, 0.5, npts);
+	  clock_t end = clock();
+	  printf("\n%f", res);
+	  double time_taken = (double)(end - begin) / CLOCKS_PER_SEC;	  
+	  printf("\n\nTime taken: %f", time_taken);
+  }
+  free(p);
+  free(q);
+  p = NULL;
+  q = NULL;
+
+  return 0;
 }
