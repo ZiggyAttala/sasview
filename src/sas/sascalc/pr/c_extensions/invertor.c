@@ -315,14 +315,13 @@ double rg(double *pars, double d_max, int n_c, int nslice) {
 }
 
 int main(void) {
-  printf("Hello World\n");
   int size_p = 40;
   int size_q = 301;
   double* p = malloc(size_p * sizeof(double));
   double* q = malloc(size_q * sizeof(double));
   int i;
   for(i = 0; i < size_q; i++) {
-      q[i] = 0.01 + (0.00166 * i);
+      q[i] = i;
       printf("%f, ", q[i]);
   }
   printf("\n");
@@ -335,13 +334,27 @@ int main(void) {
   double height = 3;
   int npts = 30;
   int j = 0;
+  printf("%f", ortho_transformed(2000, 30, 0.05));
   for(j = 0; j < 10; j++) {
+	  double* res = malloc(size_q * sizeof(double));
 	  clock_t begin = clock();
-	  double res = iq_smeared(p, d_max, size_p, height, width, 0.5, npts);
+	  i = 0;
+	  for(i = 0; i < size_q; i++) {
+          res[i] = iq_smeared(p, d_max, size_p, height, width, q[i], npts);
+	  }
 	  clock_t end = clock();
-	  printf("\n%f", res);
 	  double time_taken = (double)(end - begin) / CLOCKS_PER_SEC;	  
 	  printf("\n\nTime taken: %f", time_taken);
+	  double final_result = 0;
+	  for(i = 0; i < size_q; i++) {
+		  final_result += res[i];
+	  }
+	  /*for(i = 0; i < size_q; i++) {
+		*printf("\n\nResult: %f", res[i]);
+	  }*/
+	  printf("\n\nResult: %f", final_result);
+	  free(res);
+	  res = NULL;
   }
   free(p);
   free(q);
